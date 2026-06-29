@@ -1,0 +1,179 @@
+{
+  "service": {
+    "name": "aac-pairdrop",
+    "stage": "prod",
+    "friendly_name": "Airdrop",
+    "image_repo": "lscr.io/linuxserver/pairdrop",
+    "image_tag": "v1.11.2-ls132",
+    "description": "AirDrop Alternative f\u00fcr das lokale Netzwerk",
+    "icon": "pairdrop.png",
+    "category": "Kommunikation",
+    "hostname": "share"
+  },
+  "config": {
+    "domain_name": "example.com",
+    "generate_hostname": false,
+    "integrations": {
+      "homepage": {
+        "enabled": true
+      },
+      "autodns": {
+        "enabled": true
+      },
+      "traefik": {
+        "enabled": true,
+        "cert_resolver": "ionos",
+        "entrypoint": "websecure"
+      }
+    },
+    "schema_version": 2
+  },
+  "environment": {},
+  "secrets": {},
+  "vars": {
+    "TZ": "Europe/Berlin",
+    "RATE_LIMIT": "false",
+    "DEBUG_MODE": "false",
+    "SERVICE_DOMAIN_NAME": "CHANGE_ME",
+    "SERVICE_NAME": "aac-pairdrop",
+    "PGID": "1000",
+    "WS_FALLBACK": "false",
+    "SERVICE_IMAGE_NAME": "CHANGE_ME",
+    "SERVICE_HOSTNAME": "share",
+    "SERVICE_IMAGE_TAG": "CHANGE_ME",
+    "PUID": "1000"
+  },
+  "dependencies": {},
+  "volumes": {
+    "config": {
+      "description": "Homepage configuration files (YAMLs)"
+    }
+  },
+  "network_definitions": {
+    "secured": {
+      "name": "services-secured",
+      "external": true
+    },
+    "exposed": {
+      "name": "services-exposed",
+      "external": true
+    },
+    "interconnect": {
+      "name": "docker-default",
+      "external": true
+    },
+    "stack_internal": {
+      "name": "aac-pairdrop_stack_internal",
+      "driver": "bridge"
+    }
+  },
+  "deployments": {
+    "docker_compose": {
+      "volumes": [
+        "config:/config"
+      ],
+      "networks_to_join": [],
+      "restart_policy": "always",
+      "host_base_path": "/export/docker",
+      "environment": {
+        "TZ": "Europe/Berlin",
+        "RATE_LIMIT": "false",
+        "DEBUG_MODE": "false",
+        "SERVICE_DOMAIN_NAME": "CHANGE_ME",
+        "SERVICE_NAME": "aac-pairdrop",
+        "PGID": "1000",
+        "WS_FALLBACK": "false",
+        "SERVICE_IMAGE_NAME": "CHANGE_ME",
+        "SERVICE_HOSTNAME": "share",
+        "SERVICE_IMAGE_TAG": "CHANGE_ME",
+        "PUID": "1000"
+      }
+    }
+  },
+  "stage": "prod",
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000,
+      "external_port": 23200,
+      "protocol": "TCP"
+    }
+  ],
+  "deployment_strategy": {
+    "main": {
+      "enabled": true,
+      "target_stage": "prod"
+    },
+    "dev": {
+      "enabled": true,
+      "target_stage": "dev"
+    },
+    "test": {
+      "enabled": false,
+      "target_stage": "test"
+    },
+    "ansible-dev": {
+      "enabled": true,
+      "target_stage": "dev"
+    },
+    "iac-dev": {
+      "enabled": true,
+      "target_stage": "dev"
+    },
+    "template-dev": {
+      "enabled": true,
+      "target_stage": "dev"
+    }
+  },
+  "deployment_enabled": true,
+  "inventory_hostname_friendly": "Ci Validation Host",
+  "processed_ports": [
+    "23200:3000/tcp"
+  ],
+  "processed_env": {},
+  "processed_secrets": {},
+  "processed_networks": [
+    "exposed",
+    "interconnect",
+    "secured",
+    "stack_internal"
+  ],
+  "processed_labels": {
+    "traefik.enable": "true",
+    "traefik.http.routers.aac-pairdrop.rule": "Host(`share.example.com`)",
+    "traefik.http.routers.aac-pairdrop.entrypoints": "websecure",
+    "traefik.http.routers.aac-pairdrop.tls": "true",
+    "traefik.http.routers.aac-pairdrop.tls.certresolver": "ionos",
+    "traefik.docker.network": "services-secured",
+    "traefik.http.services.aac-pairdrop.loadbalancer.server.port": "3000",
+    "traefik.http.services.aac-pairdrop.loadbalancer.server.scheme": "http",
+    "auto-dns.createWildcard.aac-pairdrop": "false",
+    "auto-dns.customDNS.aac-pairdrop": "true",
+    "auto-dns.customDOMAIN.aac-pairdrop": "example.com",
+    "auto-dns.customHost.aac-pairdrop": "share",
+    "homepage.group": "Kommunikation",
+    "homepage.name": "Airdrop - Ci Validation Host",
+    "homepage.href": "https://share.example.com",
+    "homepage.icon": "pairdrop.png",
+    "homepage.description": "AirDrop Alternative f\u00fcr das lokale Netzwerk"
+  },
+  "processed_specs": {},
+  "processed_volumes": [
+    "/export/docker/aac-pairdrop/config:/config"
+  ],
+  "named_volumes": {},
+  "ansible_directories": [
+    {
+      "path": "/export/docker/aac-pairdrop",
+      "owner": "1000",
+      "group": "1000",
+      "mode": "0755"
+    },
+    {
+      "path": "/export/docker/aac-pairdrop/config",
+      "owner": "1000",
+      "group": "1000",
+      "mode": "0755"
+    }
+  ]
+}
