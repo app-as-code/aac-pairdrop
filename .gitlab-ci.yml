@@ -32,7 +32,10 @@ include:
     rules:
       - if: '$CI_COMMIT_BRANCH !~ /^template-dev/'
 
-  # Public mirror publish (tag-triggered; job itself gates on vX.Y.Z tags)
+  # Public mirror publish (credentialed -> gate the include to release tags only,
+  # so the publish job is never even loaded outside vX.Y.Z tag pipelines)
   - project: 'aac-application-definitions/aac-template-engine'
     ref: main
     file: '/templates/cicd/public-publish.yml'
+    rules:
+      - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
