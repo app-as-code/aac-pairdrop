@@ -31,3 +31,8 @@ include:
     file: '/templates/cicd/service-pipeline.yml'
     rules:
       - if: '$CI_COMMIT_BRANCH !~ /^template-dev/'
+
+  # Public mirror publish (tag-triggered; job itself gates on vX.Y.Z tags)
+  - project: 'aac-application-definitions/aac-template-engine'
+    ref: main
+    file: '/templates/cicd/public-publish.yml'
