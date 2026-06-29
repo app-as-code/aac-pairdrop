@@ -1,0 +1,87 @@
+service:
+  name: aac-pairdrop
+  friendly_name: Airdrop
+  image_repo: lscr.io/linuxserver/pairdrop
+  image_tag: v1.11.2-ls132
+  description: AirDrop Alternative für das lokale Netzwerk
+  icon: pairdrop.png
+  category: Kommunikation
+  stage: prod
+  hostname: share
+ports:
+- name: web
+  port: 3000
+  external_port: 23200
+  protocol: TCP
+config:
+  domain_name: example.com
+  generate_hostname: true
+  integrations:
+    homepage:
+      enabled: true
+    autodns:
+      enabled: true
+    traefik:
+      enabled: true
+      cert_resolver: ionos
+      entrypoint: websecure
+  schema_version: 2
+stage_overrides:
+  prod:
+    config:
+      generate_hostname: false
+    service:
+      hostname: share
+volumes:
+  config:
+    description: Homepage configuration files (YAMLs)
+deployment_strategy:
+  main:
+    enabled: true
+    target_stage: prod
+  dev:
+    enabled: true
+    target_stage: dev
+  test:
+    enabled: false
+    target_stage: test
+  ansible-dev:
+    enabled: true
+    target_stage: dev
+  iac-dev:
+    enabled: true
+    target_stage: dev
+  template-dev:
+    enabled: true
+    target_stage: dev
+deployments:
+  docker_compose:
+    restart_policy: always
+    host_base_path: /export/docker
+    volumes:
+    - config:/config
+    environment:
+      TZ: '{{ vars.TZ }}'
+      RATE_LIMIT: '{{ vars.RATE_LIMIT }}'
+      DEBUG_MODE: '{{ vars.DEBUG_MODE }}'
+      SERVICE_DOMAIN_NAME: '{{ vars.SERVICE_DOMAIN_NAME }}'
+      SERVICE_NAME: '{{ vars.SERVICE_NAME }}'
+      PGID: '{{ vars.PGID }}'
+      WS_FALLBACK: '{{ vars.WS_FALLBACK }}'
+      SERVICE_IMAGE_NAME: '{{ vars.SERVICE_IMAGE_NAME }}'
+      SERVICE_HOSTNAME: '{{ vars.SERVICE_HOSTNAME }}'
+      SERVICE_IMAGE_TAG: '{{ vars.SERVICE_IMAGE_TAG }}'
+      PUID: '{{ vars.PUID }}'
+vars:
+  TZ: Europe/Berlin
+  RATE_LIMIT: 'false'
+  DEBUG_MODE: 'false'
+  SERVICE_DOMAIN_NAME: CHANGE_ME
+  SERVICE_NAME: aac-pairdrop
+  PGID: '1000'
+  WS_FALLBACK: 'false'
+  SERVICE_IMAGE_NAME: CHANGE_ME
+  SERVICE_HOSTNAME: share
+  SERVICE_IMAGE_TAG: CHANGE_ME
+  PUID: '1000'
+secrets: {}

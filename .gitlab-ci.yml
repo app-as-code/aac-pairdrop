@@ -1,0 +1,33 @@
+variables:
+  # DEFAULTS for downstream pipelines
+  ANSIBLE_BRANCH: "main"
+  INVENTORY_BRANCH: "main"
+  SKIP_DEPLOYMENT: "false"
+
+workflow:
+  rules:
+    # 1. Infra Testing: IAC / Inventory Dev
+    - if: '$CI_COMMIT_BRANCH =~ /^iac-dev/'
+      variables:
+        INVENTORY_BRANCH: "dev"
+    # 2. Infra Testing: Ansible Controller Dev
+    - if: '$CI_COMMIT_BRANCH =~ /^ansible-dev/'
+      variables:
+        ANSIBLE_BRANCH: "dev"
+    # 3. Standard Flow (App Dev/Main)
+    - when: always
+
+include:
+  # ROUTE A: Experimental Template Engine
+  - project: 'aac-application-definitions/aac-template-engine'
+    ref: dev
+    file: '/templates/cicd/service-pipeline.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH =~ /^template-dev/'
+
+  # ROUTE B: Stable Template Engine (Default)
+  - project: 'aac-application-definitions/aac-template-engine'
+    ref: main
+    file: '/templates/cicd/service-pipeline.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH !~ /^template-dev/'
